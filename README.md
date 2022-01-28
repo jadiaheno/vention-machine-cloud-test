@@ -10,6 +10,7 @@ This test will consist of building a very simple application which represents a 
 - [ ] Provide instructions in the README to launch the application
 
 ## Bonus points
+- [ ] **Use TypeScript**
 - [ ] Implement a backend and persist the state in a database
 - [ ] Have a single command to launch the whole application
 - [ ] Use the open-source project [stator](https://github.com/chocolat-chaud-io/stator) as a template for your application
