@@ -13,7 +13,7 @@ This test will consist of building a very simple application which represents a 
 - [ ] **Use TypeScript**
 - [ ] Implement a backend and persist the state in a database
 - [ ] Have a single command to launch the whole application
-- [ ] Use the open-source project [stator](https://github.com/chocolat-chaud-io/stator) as a template for your application
+- [ ] Use the open-source project [T3 stack](https://create.t3.gg/) as a template for your application
 
 Here's an example to give you inspiration of a very simple UI representing the different states of what we're looking for:
 ![image](https://user-images.githubusercontent.com/6068943/150595518-1fc9cbb0-6b13-480b-aae5-0728a506a9b0.png)
