@@ -7,6 +7,7 @@
     "build": "next build",
     "db:push": "drizzle-kit push:pg",
     "db:studio": "drizzle-kit studio",
+    "db:migrate": "tsx drizzle.migration.ts",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
@@ -43,6 +44,7 @@
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "tailwindcss": "^3.3.5",
+    "tsx": "^4.7.0",
     "typescript": "^5.1.6"
   },
   "ct3aMetadata": {

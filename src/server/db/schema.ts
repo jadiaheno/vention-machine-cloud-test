@@ -3,11 +3,13 @@ import {
   index,
   integer,
   pgTableCreator,
+  pgView,
   primaryKey,
   serial,
   text,
   timestamp,
-  varchar,
+  uuid,
+  varchar
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -114,3 +116,50 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+export const albums = createTable(
+  "albums",
+  {
+    albumId: uuid("album_id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 256 }),
+    coverURL: varchar("cover_url", { length: 256 }),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at"),
+  },
+  (album) => ({
+    nameIndex: index("album_idx").on(album.albumId),
+  })
+);
+
+export const albumUserRatings = createTable(
+  "album_user_ratings",
+  {
+    albumId: uuid("album_id").notNull().references(() => albums.albumId),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    rating: integer("rating"),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at"),
+  },
+  (albumRating) => ({
+    pk: primaryKey({
+      columns: [albumRating.albumId, albumRating.userId],
+    }),
+    nameIndex: index("ratings_idx").on(albumRating.albumId),
+  })
+);
+
+
+export const ratingsView = pgView("ratings", {
+  albumId: uuid("album_id").primaryKey(),
+  name: varchar("name", { length: 256 }),
+  rating: integer("rating"),
+})
+  .as(sql`select album_id, name, avg(rating) as rating from ${albums} left join ${albumUserRatings} on albums.album_id = album_user_ratings.album_id group by album_id, name`)
+
+
