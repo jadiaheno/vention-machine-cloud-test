@@ -6,7 +6,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
+import SpotifyProvider, { type SpotifyProfile } from "next-auth/providers/spotify";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -50,16 +50,22 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: DrizzleAdapter(db, createTable) as Adapter,
   providers: [
-
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    {
+      ...SpotifyProvider({
+        clientId: env.SPOTIFY_CLIENT_ID,
+        clientSecret: env.SPOTIFY_CLIENT_SECRET,
+      }),
+      authorization:
+        "https://accounts.spotify.com/authorize?scope=user-read-email,user-top-read,user-library-read",
+      profile(profile: SpotifyProfile, tokens) {
+        return {
+          name: profile.display_name,
+          image: profile.images?.[1]?.url,
+          ...profile,
+          ...tokens,
+        };
+      },
+    },
   ],
 };
 

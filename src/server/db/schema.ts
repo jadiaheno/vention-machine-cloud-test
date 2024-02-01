@@ -121,8 +121,8 @@ export const albums = createTable(
   "albums",
   {
     albumId: uuid("album_id").primaryKey().defaultRandom(),
-    name: varchar("name", { length: 256 }),
-    coverURL: varchar("cover_url", { length: 256 }),
+    name: varchar("name", { length: 256 }).notNull(),
+    coverURL: varchar("cover_url", { length: 256 }).notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -140,7 +140,7 @@ export const albumUserRatings = createTable(
     userId: varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
-    rating: integer("rating"),
+    rating: integer("rating").notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
