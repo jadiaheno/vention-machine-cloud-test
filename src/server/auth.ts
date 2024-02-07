@@ -6,7 +6,9 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import SpotifyProvider, { type SpotifyProfile } from "next-auth/providers/spotify";
+import SpotifyProvider, {
+  type SpotifyProfile,
+} from "next-auth/providers/spotify";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -22,15 +24,8 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -40,13 +35,15 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: async ({ session, user }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+        },
+      };
+    },
   },
   adapter: DrizzleAdapter(db, createTable) as Adapter,
   providers: [

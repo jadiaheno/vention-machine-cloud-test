@@ -155,6 +155,11 @@ export const albumUserRatings = createTable(
 );
 
 
+export const albumUserRatingsRelations = relations(albumUserRatings, ({ one }) => ({
+  album: one(albums, { fields: [albumUserRatings.albumId], references: [albums.albumId] }),
+  user: one(users, { fields: [albumUserRatings.userId], references: [users.id] }),
+}));
+
 export const ratingsView = pgView("ratings", {
   albumId: uuid("album_id").primaryKey(),
   name: varchar("name", { length: 256 }),
@@ -163,3 +168,23 @@ export const ratingsView = pgView("ratings", {
   .as(sql`select album_id, name, avg(rating) as rating from ${albums} left join ${albumUserRatings} on albums.album_id = album_user_ratings.album_id group by album_id, name`)
 
 
+export const carts = createTable(
+  "carts",
+  {
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    albumId: uuid("album_id").notNull().references(() => albums.albumId),
+    quantity: integer("quantity").notNull(),
+  },
+  (cart) => ({
+    pk: primaryKey({
+      columns: [cart.userId, cart.albumId],
+    }),
+  })
+);
+
+export const cartsRelations = relations(carts, ({ one }) => ({
+  album: one(albums, { fields: [carts.albumId], references: [albums.albumId] }),
+  user: one(users, { fields: [carts.userId], references: [users.id] }),
+}));
