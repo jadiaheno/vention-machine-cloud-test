@@ -1,8 +1,7 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {
-  type GetServerSidePropsContext,
   type NextApiRequest,
-  type NextApiResponse,
+  type NextApiResponse
 } from "next";
 import {
   getServerSession,
@@ -102,6 +101,7 @@ export const authOptions: (
                 expires: sessionExpiry,
               }));
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             setCookie({ res }, "next-auth.session-token", sessionToken, {
               expires: sessionExpiry,
               path: "/",
@@ -118,12 +118,13 @@ export const authOptions: (
           req.query.nextauth?.includes("credentials") &&
           req.method === "POST"
         ) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           const cookies = parseCookies({ req }) as Record<string, string>;
           const nextSessionTokenCookie = cookies["next-auth.session-token"];
           if (nextSessionTokenCookie) return nextSessionTokenCookie;
           else return "";
         }
-        // Revert to default behaviour when not in the credentials provider callback flow
+        // Revert to default behavior when not in the credentials provider callback flow
         return encode(params);
       },
       async decode(params) {
@@ -134,7 +135,7 @@ export const authOptions: (
         ) {
           return null;
         }
-        // Revert to default behaviour when not in the credentials provider callback flow
+        // Revert to default behavior when not in the credentials provider callback flow
         return decode(params);
       },
     },
@@ -159,7 +160,7 @@ export const authOptions: (
       CredentialsProvider({
         name: "anonymous",
         credentials: {},
-        async authorize(creds, req) {
+        async authorize() {
           return createAnonymousUser();
         },
       }),
@@ -173,8 +174,8 @@ export const authOptions: (
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
+  req: NextApiRequest
+  res: NextApiResponse;
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions(ctx.req, ctx.res));
 };
