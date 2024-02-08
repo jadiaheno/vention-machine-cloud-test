@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  next-app:
+    container_name: next-app
+    build:
+      context: .
+      dockerfile: dockerfile
+
+    environment:
+      - DATABASE_URL=postgresql://postgres:v3n710n@postgres:5432/venti
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=hPZgjdaULGHBzD8XoGgGRHXygWLq+lukgsUp1FNomHQ=
+      - SPOTIFY_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - SPOTIFY_CLIENT_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - my_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    user: postgres
+    volumes:
+      - ./drizzle:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_DB=venti
+      - POSTGRES_PASSWORD=v3n710n
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - my_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  my_network:
+    driver: bridge
