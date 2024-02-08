@@ -8,12 +8,12 @@ export interface SpotifyLikedResponse {
     items: Item[]
 }
 
-export interface Item {
+interface Item {
     added_at: string
     track: Track
 }
 
-export interface Track {
+interface Track {
     album: Album
     artists: Artist2[]
     available_markets: string[]
@@ -25,7 +25,6 @@ export interface Track {
     href: string
     id: string
     is_playable: boolean
-    linked_from: LinkedFrom
     restrictions: Restrictions2
     name: string
     popularity: number
@@ -36,7 +35,7 @@ export interface Track {
     is_local: boolean
 }
 
-export interface Album {
+interface Album {
     album_type: string
     total_tracks: number
     available_markets: string[]
@@ -53,21 +52,21 @@ export interface Album {
     artists: Artist[]
 }
 
-export interface ExternalUrls {
+interface ExternalUrls {
     spotify: string
 }
 
-export interface Image {
+interface Image {
     url: string
     height: number
     width: number
 }
 
-export interface Restrictions {
+interface Restrictions {
     reason: string
 }
 
-export interface Artist {
+interface Artist {
     external_urls: ExternalUrls2
     href: string
     id: string
@@ -76,11 +75,11 @@ export interface Artist {
     uri: string
 }
 
-export interface ExternalUrls2 {
+interface ExternalUrls2 {
     spotify: string
 }
 
-export interface Artist2 {
+interface Artist2 {
     external_urls: ExternalUrls3
     followers: Followers
     genres: string[]
@@ -93,33 +92,33 @@ export interface Artist2 {
     uri: string
 }
 
-export interface ExternalUrls3 {
+interface ExternalUrls3 {
     spotify: string
 }
 
-export interface Followers {
+interface Followers {
     href: string
     total: number
 }
 
-export interface Image2 {
+interface Image2 {
     url: string
     height: number
     width: number
 }
 
-export interface ExternalIds {
+interface ExternalIds {
     isrc: string
     ean: string
     upc: string
 }
 
-export interface ExternalUrls4 {
+interface ExternalUrls4 {
     spotify: string
 }
 
-export interface LinkedFrom { }
 
-export interface Restrictions2 {
+
+interface Restrictions2 {
     reason: string
 }

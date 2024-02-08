@@ -8,7 +8,7 @@ export interface SpotifyTopResponse {
     previous: string
 }
 
-export interface Item {
+interface Item {
     album: Album
     artists: Artist2[]
     available_markets: string[]
@@ -28,7 +28,7 @@ export interface Item {
     uri: string
 }
 
-export interface Album {
+interface Album {
     album_type: string
     artists: Artist[]
     available_markets: string[]
@@ -44,7 +44,7 @@ export interface Album {
     uri: string
 }
 
-export interface Artist {
+interface Artist {
     external_urls: ExternalUrls
     href: string
     id: string
@@ -53,21 +53,21 @@ export interface Artist {
     uri: string
 }
 
-export interface ExternalUrls {
+interface ExternalUrls {
     spotify: string
 }
 
-export interface ExternalUrls2 {
+interface ExternalUrls2 {
     spotify: string
 }
 
-export interface Image {
+interface Image {
     height: number
     url: string
     width: number
 }
 
-export interface Artist2 {
+interface Artist2 {
     external_urls: ExternalUrls3
     href: string
     id: string
@@ -76,14 +76,14 @@ export interface Artist2 {
     uri: string
 }
 
-export interface ExternalUrls3 {
+interface ExternalUrls3 {
     spotify: string
 }
 
-export interface ExternalIds {
+interface ExternalIds {
     isrc: string
 }
 
-export interface ExternalUrls4 {
+interface ExternalUrls4 {
     spotify: string
 }
