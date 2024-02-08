@@ -10,6 +10,10 @@ import SpotifyProvider, {
   type SpotifyProfile,
 } from "next-auth/providers/spotify";
 
+import { randomUUID } from "crypto";
+import { type User } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { adjectives, animals, colors, uniqueNamesGenerator, type Config } from 'unique-names-generator';
 import { env } from "~/env";
 import { db } from "~/server/db";
 import { createTable } from "~/server/db/schema";
@@ -63,6 +67,13 @@ export const authOptions: NextAuthOptions = {
         };
       },
     },
+    CredentialsProvider({
+      name: "anonymous",
+      credentials: {},
+      async authorize() {
+        return createAnonymousUser();
+      },
+    }),
   ],
 };
 
@@ -76,4 +87,28 @@ export const getServerAuthSession = (ctx: {
   res: GetServerSidePropsContext["res"];
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
+};
+
+
+const createAnonymousUser = (): User => {
+  // generate a random name and email for this anonymous user
+  const customConfig: Config = {
+    dictionaries: [adjectives, colors, animals],
+    separator: '-',
+    length: 3,
+    style: 'capital'
+  };
+  // handle is simple-red-aardvar
+  const unique_handle: string = (uniqueNamesGenerator(customConfig)).replaceAll(' ', '');
+  // real name is Red Aardvark
+  const unique_realname: string = unique_handle.split('-').slice(1).join(' ');
+  const unique_uuid: string = randomUUID();
+
+  return {
+    id: unique_uuid,
+    email: `${unique_handle.toLowerCase()}@example.com`,
+    name: unique_realname,
+    image: "",
+    provider: "anonymous"
+  };
 };

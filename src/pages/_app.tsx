@@ -4,7 +4,8 @@ import { type AppType } from "next/app";
 
 import { api } from "~/utils/api";
 
-import { CartProvider } from "~/contexts/CartContext";
+import { CartProvider } from "~/providers/CartProvider";
+import GuestSessionProvider from "~/providers/GuestSessionProvider";
 import "~/styles/globals.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -13,9 +14,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <CartProvider>
-        <Component {...pageProps} />
-      </CartProvider>
+      <GuestSessionProvider>
+        <CartProvider>
+          <Component {...pageProps} />
+        </CartProvider>
+      </GuestSessionProvider>
     </SessionProvider>
   );
 };

@@ -5,16 +5,15 @@ import { api } from "~/utils/api";
 
 import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
 import { useContext } from "react";
-import { AlbumItem } from "~/components/AlbumItem";
+
+import { Album } from "~/components/Album";
 import { Cart } from "~/components/Cart";
-import { CartContext } from "~/contexts/CartContext";
+import { CartContext } from "~/providers/CartProvider";
 
 const limit = 50;
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
-
-  const { addItem } = useContext(CartContext);
+  const { cart, addItem, removeItem } = useContext(CartContext);
 
   const { data: albums, fetchNextPage } =
     api.album.getDefaultAlbums.useInfiniteQuery(
@@ -26,6 +25,29 @@ export default function Home() {
         initialCursor: 0,
       },
     );
+  const utils = api.useUtils();
+  const { mutate } = api.ratings.rateAlbum.useMutation({
+    onMutate: async ({ albumId, rating }) => {
+      const previousState = utils.album.getDefaultAlbums.getInfiniteData();
+      utils.album.getDefaultAlbums.setData({}, (prev) => {
+        const newAlbums = prev?.map((album) => {
+          if (album.albumId === albumId) {
+            return { ...album, rating };
+          }
+          return album;
+        });
+
+        return newAlbums;
+      });
+      return { previousState };
+    },
+    onError: (_, __, context) => {
+      utils.album.getDefaultAlbums.setInfiniteData({}, context?.previousState);
+    },
+    onSettled: () => {
+      void utils.album.getDefaultAlbums.invalidate();
+    },
+  });
 
   return (
     <>
@@ -44,9 +66,6 @@ export default function Home() {
             Album Store
           </h1>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
             <AuthShowcase />
           </div>
           <Cart />
@@ -59,14 +78,28 @@ export default function Home() {
           >
             {albums
               ? albums?.pages.map((page, i) =>
-                  page.map((album) => (
-                    <AlbumItem
-                      album={album}
-                      onClick={addItem}
-                      data-grid-groupkey={i}
-                      key={album.albumId}
-                    />
-                  )),
+                  page.map((album) => {
+                    const isInCart =
+                      cart.findIndex(
+                        (cartItem) => cartItem.album.albumId === album.albumId,
+                      ) !== -1;
+
+                    return (
+                      <Album
+                        album={album}
+                        onClick={() =>
+                          isInCart ? removeItem(album.albumId) : addItem(album)
+                        }
+                        data-grid-groupkey={i}
+                        key={album.albumId}
+                        rating={album.rating ?? 0}
+                        setRating={(rating) =>
+                          mutate({ albumId: album.albumId, rating })
+                        }
+                        isInCart={isInCart}
+                      />
+                    );
+                  }),
                 )
               : null}
           </MasonryInfiniteGrid>
@@ -80,16 +113,10 @@ export default function Home() {
 function AuthShowcase() {
   const { data: sessionData } = useSession();
 
-  const { data: secretMessage } = api.post.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"

@@ -28,6 +28,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "^2.2.1",
+    "unique-names-generator": "^4.7.1",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },

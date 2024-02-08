@@ -52,6 +52,7 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  ratings: many(albumUserRatings),
 }));
 
 export const accounts = createTable(
@@ -132,6 +133,10 @@ export const albums = createTable(
     nameIndex: index("album_idx").on(album.albumId),
   })
 );
+
+export const albumsRelations = relations(albums, ({ many }) => ({
+  albumUserRatings: many(albumUserRatings),
+}));
 
 export const albumUserRatings = createTable(
   "album_user_ratings",

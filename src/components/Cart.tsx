@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { useContext } from "react";
-import { CartContext, CartInterface } from "~/contexts/CartContext";
+import { CartContext, type CartInterface } from "~/providers/CartProvider";
 
 export const Cart = () => {
   const { cart, removeItem } = useContext(CartContext);
   return (
-    <section className="h-screen bg-gray-100 py-12 sm:py-16 lg:py-20">
+    <div className="py-12 sm:py-16 lg:py-20">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center">
           <h1 className="text-2xl font-semibold text-gray-900">Your Cart</h1>
@@ -24,55 +24,11 @@ export const Cart = () => {
                   ))}
                 </ul>
               </div>
-
-              <div className="mt-6 space-y-3 border-b border-t py-8">
-                <div className="flex items-center justify-between">
-                  <p className="text-gray-400">Subtotal</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    ${cart.reduce((acc, item) => acc + item.quantity * 9.99, 0)}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-gray-400">Shipping</p>
-                  <p className="text-lg font-semibold text-gray-900">$8.00</p>
-                </div>
-              </div>
-              <div className="mt-6 flex items-center justify-between">
-                <p className="text-sm font-medium text-gray-900">Total</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  <span className="text-xs font-normal text-gray-400">USD</span>{" "}
-                  $
-                  {cart.reduce((acc, item) => acc + item.quantity * 9.99, 0) +
-                    8}
-                </p>
-              </div>
-              <div className="mt-6 text-center">
-                <button
-                  type="button"
-                  className="group inline-flex w-full items-center justify-center rounded-md bg-orange-500 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
-                >
-                  Place Order
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ml-4 h-6 w-6 transition-all group-hover:ml-8"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </button>
-              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
@@ -91,7 +47,7 @@ function CartItem({ cartItem, removeItem }: CartItemProps) {
         <Image
           className="h-24 w-24 max-w-full rounded-lg object-cover"
           src={cartItem.album.coverURL}
-          alt=""
+          alt="Album cover"
           width={24}
           height={24}
         />
@@ -118,18 +74,17 @@ function CartItem({ cartItem, removeItem }: CartItemProps) {
             title="Remove item"
           >
             <svg
-              className="h-5 w-5"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
+              stroke-width="1.5"
               stroke="currentColor"
+              className="h-6 w-6"
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-                className=""
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
               />
             </svg>
           </button>
