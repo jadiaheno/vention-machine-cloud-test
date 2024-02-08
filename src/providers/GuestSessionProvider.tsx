@@ -6,22 +6,20 @@ export default function GuestSessionProvider({
 }: {
   children: ReactNode;
 }) {
-  const { status } = useSession();
+  const { status, update } = useSession();
   useEffect(() => {
     if (status === "unauthenticated") {
       // login as anonymous
-      signIn("credentials")
-        .then(() => {
+      signIn("credentials", {})
+        .then(async () => {
+          await update();
           /* do nothing */
-          console.log("Logged in as anonymous");
+          console.info("Logged in as anonymous");
         })
         .catch((error) => {
           console.error("Failed to login as anonymous", error);
         });
     }
   }, [status]);
-
-  console.log(status);
-
   return <>{children}</>;
 }
